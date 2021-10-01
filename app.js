@@ -18,6 +18,8 @@ app.use(express.static('public'))
 
 const restaurantList = require('./restaurant.json')
 
+const Restaurant = require('./models/restaurant')
+
 //mongoDB connection
 db.on('error', () => {
   console.log('mongoDB error ！')
@@ -26,9 +28,13 @@ db.once('open', () => {
   console.log('mongoDB connection!!!')
 })
 
+
 //index page router
 app.get('/', (req, res) => {
-  res.render('index', { restaurants: restaurantList.results })
+  Restaurant.find()
+    .lean()
+    .then(restaurants => res.render('index', { restaurants }))
+    .catch(error => console.log(error))
 })
 
 //show page router
