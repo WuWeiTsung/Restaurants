@@ -20,6 +20,10 @@ const restaurantList = require('./restaurant.json')
 
 const Restaurant = require('./models/restaurant')
 
+//body-parser setting
+const bodyParser = require('body-parser')
+app.use(bodyParser.urlencoded({ extended: true }))
+
 //mongoDB connection
 db.on('error', () => {
   console.log('mongoDB error ！')
@@ -34,6 +38,27 @@ app.get('/', (req, res) => {
   Restaurant.find()
     .lean()
     .then(restaurants => res.render('index', { restaurants }))
+    .catch(error => console.log(error))
+})
+
+//create page router
+app.get('/restaurants/create', (req, res) => {
+  res.render('create')
+})
+
+app.post('/restaurant', (req, res) => {
+  return Restaurant.create({
+    name: req.body.name,
+    name_en: req.body.name_en,
+    category: req.body.category,
+    image: req.body.image,
+    location: req.body.location,
+    phone: req.body.phone,
+    google_map: req.body.google_map,
+    rating: req.body.rating,
+    description: req.body.description
+  })
+    .then(() => res.redirect('/'))
     .catch(error => console.log(error))
 })
 
