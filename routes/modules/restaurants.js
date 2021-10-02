@@ -44,17 +44,18 @@ router.get('/:id/edit', (req, res) => {
 
 router.put('/:id', (req, res) => {
   const id = req.params.id
+  const { name, name_en, category, image, location, phone, google_map, rating, description } = req.body
   Restaurant.findById(id)
     .then(restaurant => {
-      restaurant.name = req.body.name,
-        restaurant.name_en = req.body.name_en,
-        restaurant.category = req.body.category,
-        restaurant.image = req.body.image,
-        restaurant.location = req.body.location,
-        restaurant.phone = req.body.phone,
-        restaurant.google_map = req.body.google_map,
-        restaurant.rating = req.body.rating,
-        restaurant.description = req.body.description
+      restaurant.name = name,
+        restaurant.name_en = name_en,
+        restaurant.category = category,
+        restaurant.image = image,
+        restaurant.location = location,
+        restaurant.phone = phone,
+        restaurant.google_map = google_map,
+        restaurant.rating = rating,
+        restaurant.description = description
       return restaurant.save()
     })
     .then(() => res.redirect(`/restaurants/${id}`))
@@ -69,7 +70,5 @@ router.delete('/:id', (req, res) => {
     .then(() => res.redirect('/'))
     .catch(error => console.log(error))
 })
-
-
 
 module.exports = router
