@@ -20,9 +20,9 @@ app.use(express.static('public'))
 const methodOverride = require('method-override')
 app.use(methodOverride('_method'))
 
-// const restaurantList = require('./restaurant.json')
-
-const Restaurant = require('./models/restaurant')
+//routes setting
+const routes = require('./routes')
+app.use(routes)
 
 //body-parser setting
 const bodyParser = require('body-parser')
@@ -34,83 +34,6 @@ db.on('error', () => {
 })
 db.once('open', () => {
   console.log('mongoDB connection!!!')
-})
-
-
-//index page router
-app.get('/', (req, res) => {
-  Restaurant.find()
-    .lean()
-    .sort({ _id: 'asc' })
-    .then(restaurants => res.render('index', { restaurants }))
-    .catch(error => console.log(error))
-})
-
-//create page router
-app.get('/restaurants/create', (req, res) => {
-  res.render('create')
-})
-
-app.post('/restaurant', (req, res) => {
-  return Restaurant.create({
-    name: req.body.name,
-    name_en: req.body.name_en,
-    category: req.body.category,
-    image: req.body.image,
-    location: req.body.location,
-    phone: req.body.phone,
-    google_map: req.body.google_map,
-    rating: req.body.rating,
-    description: req.body.description
-  })
-    .then(() => res.redirect('/'))
-    .catch(error => console.log(error))
-})
-
-//show page router
-app.get('/restaurants/:id', (req, res) => {
-  const id = req.params.id
-  return Restaurant.findById(id)
-    .lean()
-    .then((restaurant) => res.render('show', { restaurant }))
-    .catch(error => console.log(error))
-})
-
-//edit page router
-app.get('/restaurants/:id/edit', (req, res) => {
-  const id = req.params.id
-  Restaurant.findById(id)
-    .lean()
-    .then((restaurant) => res.render('edit', { restaurant }))
-    .catch(error => console.log(error))
-})
-
-app.put('/restaurants/:id', (req, res) => {
-  const id = req.params.id
-  Restaurant.findById(id)
-    .then(restaurant => {
-      restaurant.name = req.body.name,
-        restaurant.name_en = req.body.name_en,
-        restaurant.category = req.body.category,
-        restaurant.image = req.body.image,
-        restaurant.location = req.body.location,
-        restaurant.phone = req.body.phone,
-        restaurant.google_map = req.body.google_map,
-        restaurant.rating = req.body.rating,
-        restaurant.description = req.body.description
-      return restaurant.save()
-    })
-    .then(() => res.redirect(`/restaurants/${id}`))
-    .catch(error => console.log(error))
-})
-
-//delete routers
-app.delete('/restaurants/:id', (req, res) => {
-  const id = req.params.id
-  Restaurant.findById(id)
-    .then(restaurant => restaurant.remove())
-    .then(() => res.redirect('/'))
-    .catch(error => console.log(error))
 })
 
 //search page router
