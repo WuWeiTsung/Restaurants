@@ -26,16 +26,7 @@ require('./config/mongoose')
 const routes = require('./routes')
 app.use(routes)
 
-//search page router
-app.get('/search', (req, res) => {
-  const keyword = req.query.keyword
-  const lowerCaseKeyword = keyword.toLowerCase()
-  const restaurants = restaurantList.results.filter(restaurant => {
-    return restaurant.name.toLowerCase().includes(lowerCaseKeyword) || restaurant.category.toLowerCase().includes(lowerCaseKeyword)
-  })
-  res.render('index', { restaurants, keyword })
-})
-
+//server listen 
 app.listen(port, () => {
   console.log(`Express is listened on http://localhost:${port}`)
 })
