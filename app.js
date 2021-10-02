@@ -16,7 +16,11 @@ app.set('view engine', 'handlebars')
 //static files setting
 app.use(express.static('public'))
 
-const restaurantList = require('./restaurant.json')
+//method-override setting
+const methodOverride = require('method-override')
+app.use(methodOverride('_method'))
+
+// const restaurantList = require('./restaurant.json')
 
 const Restaurant = require('./models/restaurant')
 
@@ -37,6 +41,7 @@ db.once('open', () => {
 app.get('/', (req, res) => {
   Restaurant.find()
     .lean()
+    .sort({ _id: 'asc' })
     .then(restaurants => res.render('index', { restaurants }))
     .catch(error => console.log(error))
 })
@@ -80,7 +85,7 @@ app.get('/restaurants/:id/edit', (req, res) => {
     .catch(error => console.log(error))
 })
 
-app.post('/restaurants/:id/edit', (req, res) => {
+app.put('/restaurants/:id', (req, res) => {
   const id = req.params.id
   Restaurant.findById(id)
     .then(restaurant => {
@@ -100,7 +105,7 @@ app.post('/restaurants/:id/edit', (req, res) => {
 })
 
 //delete routers
-app.post('/restaurants/:id/delete', (req, res) => {
+app.delete('/restaurants/:id', (req, res) => {
   const id = req.params.id
   Restaurant.findById(id)
     .then(restaurant => restaurant.remove())
